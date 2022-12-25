@@ -1,0 +1,6 @@
+<LanguageData>
+  <MorePowerInfo.Production>Total power prod/usage/balance: {0} / {1} / {2} W</MorePowerInfo.Production>
+  <MorePowerInfo.Storage>Storage/current autonomy: {0} Wd / {1}</MorePowerInfo.Storage>
+  <MorePowerInfo.BatteryOnly>Storage-only autonomy: {0}</MorePowerInfo.BatteryOnly>
+  <MorePowerInfo.Forever>Forever</MorePowerInfo.Forever>
+</LanguageData>
