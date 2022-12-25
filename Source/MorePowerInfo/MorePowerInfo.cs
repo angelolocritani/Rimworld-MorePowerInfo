@@ -38,8 +38,6 @@ namespace ExtraPowerInfo
                         if (powerNet.powerComps[i].PowerOn && powerNet.powerComps[i].EnergyOutputPerTick != 0f)
                         {
 
-                            //Log.Message(powerNet.powerComps[i].parent.def.defName.ToString() + ": " + powerNet.powerComps[i].EnergyOutputPerTick);
-
                             if (powerNet.powerComps[i].EnergyOutputPerTick < 0f)
                             {
                                 energyUsageTick -= powerNet.powerComps[i].EnergyOutputPerTick;
@@ -54,8 +52,9 @@ namespace ExtraPowerInfo
 
 
                     if (Math.Abs(energyBalanceTick) < 0.00001) energyBalanceTick = 0; //dirty trick to avoid floating points rounding errors
+#if DEBUG
                     Log.Message("ept: " + energyProductionTick + " eut: " + energyUsageTick + " ebt: " + energyBalanceTick + "es: " + energyStored);
-
+#endif
                     int currentAutonomyTicks = 0;
                     int storageOnlyAutonomyTicks = 0;
 
@@ -74,13 +73,20 @@ namespace ExtraPowerInfo
                             currentAutonomyTicks = (int)(energyStored / -energyBalanceTick);
                         }
 
-                        storageOnlyAutonomyTicks = (int)(energyStored / energyUsageTick);
+                        if (energyUsageTick == 0) /* no energy usage (ie: disconnected battery) -> infinite autonomy */
+                        {
+                            storageOnlyAutonomyStr = "MorePowerInfo.Forever".Translate();
+                        }
+                        else
+                        {
+                            storageOnlyAutonomyTicks = (int)(energyStored / energyUsageTick);
+                        }
 
                     }
 
                     /* string conversion */
                     if (currentAutonomyStr == string.Empty) currentAutonomyStr = currentAutonomyTicks.ToStringTicksToPeriod();
-                    storageOnlyAutonomyStr = storageOnlyAutonomyTicks.ToStringTicksToPeriod();
+                    if (storageOnlyAutonomyStr == string.Empty)  storageOnlyAutonomyStr = storageOnlyAutonomyTicks.ToStringTicksToPeriod();
                     string energyStoredStr = energyStored.ToString("F0");
                     string energyProductionStr = (energyProductionTick / ___WattsToWattDaysPerTick).ToString("F0");
                     string energyUsageStr = (energyUsageTick / ___WattsToWattDaysPerTick).ToString("F0");
